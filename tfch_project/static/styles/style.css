@@ -13,6 +13,7 @@
   --color-success: #5dd693;
   --color-error: #fc4b0b;
   --color-black: #000000;
+  --color-white: #ffffff;
 }
 
 /*========== base styles ==========*/
@@ -1077,7 +1078,7 @@ a {
 }
 
 .thread__top svg {
-  fill: var(--color-dark-light);
+  fill: var(--color-black);
 }
 
 .thread__author {
@@ -1111,7 +1112,7 @@ a {
 .room__message > form > input {
   resize: none;
   background-color: var(--color-dark-light);
-  color: var(--color-black);
+  color: var(--color-white);
   border: none;
   outline: none;
   border-radius: 0.7rem;
@@ -1125,7 +1126,7 @@ a {
 }
 
 .room__message > form > input::placeholder {
-  color: var(--color-light-gray);
+  color: var(--color-white);
 }
 
 .participants__top span {
