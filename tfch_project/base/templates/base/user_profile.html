@@ -13,28 +13,23 @@
         <div class="profile">
           <div class="profile__avatar">
             <div class="avatar avatar--large active">
-              <img src="{{user.avatar.url}}" />
+              <img src="{{user.pianist.avatar.url}}" />
             </div>
           </div>
           <div class="profile__info">
-            <h3>{{user.username}}</h3>
-            <p>@{{user.username}}</p>
+            <h3>{{user.get_full_name}}</h3>
             {% if request.user == user%}
-            <a href="{% url 'update-user' %}"  class="btn btn--main btn--pill">Edytuj Profil</a>
+            <a href="{% url 'update-user' %}"  class="btn btn--main btn--pill">Modyfikacje</a>
             {% endif %}
-          </div>
-          <div class="profile__about">
-            <h3>O mnie</h3>
-            <p>
-              {{user.bio}}
-            </p>
           </div>
         </div>
 
         <div class="roomList__header">
           <div>
-            <h2><a>Pokoje czatu użytkownika {{user.username}}</a>
+            <h2><a>Program koncertu</a>
             </h2>
+            <hr>
+            <p>{{user.pianist.program}}</p>
           </div>
         </div>
         {% include 'base/feed_component.html' %}

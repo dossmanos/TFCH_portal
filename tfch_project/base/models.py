@@ -1,15 +1,34 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 # Create your models here.
 
-class User(AbstractUser):
-    name = models.CharField(max_length=200, null=True)
-    email = models.EmailField(unique=True, null=True)
-    bio = models.TextField(null=True)
+class Composition(models.Model):
+    polish_name:str = 'any'
+    english_name:str = 'any'
+    name:list = [
+        {'polski': polish_name},
+        {'english': english_name},
+    ]
 
+    def __init__(self, pol_composition_name, eng_composition_name):
+        self.name =[
+            {'polski':pol_composition_name},
+            {'english':eng_composition_name},
+        ]
+    def __str__(self):
+         return self.name()   
+    
+class ChopinPieces(models.Model):
+    pieces: list[Composition] = []
+
+class Pianist(models.Model):
+    pianist = models.OneToOneField(User,on_delete=models.CASCADE)
+    program = models.TextField(max_length=1500)
+
+    next_concert = models.DateField(name='next_concert')
+    def __str__(self):
+        return self.pianist.get_full_name()
     avatar = models.ImageField(null=True, default='avatar.svg')
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
 class ChatTopic(models.Model):
     topic_name = models.CharField(max_length=200)

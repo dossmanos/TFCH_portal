@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
-from .models import ChatRoom, ChatTopic, SystemMessage, User
+from .models import ChatRoom, ChatTopic, SystemMessage, User, Pianist
 from .forms import ChatRoomForm, UserForm, MyUserCreationForm
 # Create your views here.
 
@@ -14,21 +14,21 @@ def login_page(request):
         return redirect('home page')
 
     if request.method == "POST":
-        email=request.POST.get('email')
+        username=request.POST.get('username')
         password=request.POST.get('password')
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username=username)
         except:   
             messages.error(request, 'Specified user does not exist')
 
-        user = authenticate(request, email=email, password=password)    
+        user = authenticate(request, username=username, password=password)    
 
         if user is not None:
             login(request, user)   
             return redirect('home page')
         else:
-            messages.error(request, 'User name or password is INVALID')
+            messages.error(request, 'Nieprawidłowa nazwa użytkownika lub hasło')
 
     context = {'page':page}    
     return render(request,'base/login_form.html', context)
@@ -157,7 +157,8 @@ def delete_a_post(request, primary_key):
 
 @login_required(login_url='login')
 def update_user(request): 
-    user = request.user  
+    user = request.user
+    pianist =request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES ,instance=user)

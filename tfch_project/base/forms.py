@@ -1,11 +1,11 @@
 from django.forms import ModelForm
-from .models import ChatRoom, User
+from .models import ChatRoom, User, Pianist
 from django.contrib.auth.forms import UserCreationForm
 
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['name','username','email','password1','password2']
+        fields = ['username','password1','password2']
 
 class ChatRoomForm(ModelForm):
     class Meta:
@@ -15,5 +15,5 @@ class ChatRoomForm(ModelForm):
 
 class UserForm(ModelForm):
     class Meta:
-        model = User
-        fields = ['avatar','name','username','email','bio']
+        model = Pianist
+        fields = ['program']
