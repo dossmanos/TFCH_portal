@@ -1,30 +1,45 @@
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
+class Person(models.Model):
+    name = models.CharField(max_length=50)
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=128)
+    members = models.ManyToManyField(
+        Person,
+        through="Membership",
+        through_fields=("group", "person"),
+    )
+
+
+class Membership(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    inviter = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="membership_invites",
+    )
+    invite_reason = models.CharField(max_length=64)
+class Program(models.Model):
+    #compositions = models.ManyToManyField()
+    
+    pianist = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
 
 class Composition(models.Model):
-    polish_name:str = 'any'
-    english_name:str = 'any'
-    name:list = [
+    polish_name:str = models.TextField(max_length=150, null=True)
+    english_name:str = models.TextField(max_length=150, null=True)
+    program = models.ForeignKey(Program,on_delete=models.CASCADE, null=True)
+    name:list[dict] = [
         {'polski': polish_name},
         {'english': english_name},
     ]
-
-    def __init__(self, pol_composition_name, eng_composition_name):
-        self.name =[
-            {'polski':pol_composition_name},
-            {'english':eng_composition_name},
-        ]
     def __str__(self):
-         return self.name()   
-    
-class ChopinPieces(models.Model):
-    pieces: list[Composition] = []
-
+        return self.polish_name
 class Pianist(models.Model):
     pianist = models.OneToOneField(User,on_delete=models.CASCADE)
-    program = models.TextField(max_length=1500)
-
     next_concert = models.DateField(name='next_concert')
     def __str__(self):
         return self.pianist.get_full_name()

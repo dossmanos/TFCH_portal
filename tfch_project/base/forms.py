@@ -16,4 +16,4 @@ class ChatRoomForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = Pianist
-        fields = ['program']
+        fields = '__all__'
