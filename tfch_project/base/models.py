@@ -1,50 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
-class Person(models.Model):
-    name = models.CharField(max_length=50)
-
-
-class Group(models.Model):
-    name = models.CharField(max_length=128)
-    members = models.ManyToManyField(
-        Person,
-        through="Membership",
-        through_fields=("group", "person"),
-    )
-
-
-class Membership(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    inviter = models.ForeignKey(
-        Person,
-        on_delete=models.CASCADE,
-        related_name="membership_invites",
-    )
-    invite_reason = models.CharField(max_length=64)
-class Program(models.Model):
-    #compositions = models.ManyToManyField()
-    
-    pianist = models.ForeignKey(User,on_delete=models.CASCADE, null=True)
-
 class Composition(models.Model):
-    polish_name:str = models.TextField(max_length=150, null=True)
-    english_name:str = models.TextField(max_length=150, null=True)
-    program = models.ForeignKey(Program,on_delete=models.CASCADE, null=True)
+    polish_name:str = models.TextField(max_length=100, null=True)
+    english_name:str = models.TextField(max_length=100, null=True)
     name:list[dict] = [
         {'polski': polish_name},
         {'english': english_name},
     ]
+
     def __str__(self):
         return self.polish_name
+    
+class Program(models.Model):
+    #pianist = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=100, null=True, unique=True)
+    compositions = models.ManyToManyField(Composition, related_name='compositions', blank=True)
+    def __str__(self):
+        return self.name    
+
 class Pianist(models.Model):
     pianist = models.OneToOneField(User,on_delete=models.CASCADE)
+    programs = models.ManyToManyField(Program, related_name='programs',blank=True)
     next_concert = models.DateField(name='next_concert')
     def __str__(self):
         return self.pianist.get_full_name()
     avatar = models.ImageField(null=True, default='avatar.svg')
 
+# class Concert(models.Model):
+#     pianist = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+#     program = models.ForeignKey(Program, on_delete=models.SET_NULL, null=True)
+#     date = models.DateTimeField()
 class ChatTopic(models.Model):
     topic_name = models.CharField(max_length=200)
 

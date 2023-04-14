@@ -4,9 +4,6 @@
 {% block content %} 
   <main class="profile-page layout layout--3">
     <div class="container">
-      <!-- Topics Start -->
-      <!-- Topics End -->
-
       <!-- Room List Start -->
       <div class="roomList">
         <div class="profile">
@@ -17,27 +14,28 @@
           </div>
           <div class="profile__info">
             <h3>{{user.get_full_name}}</h3>
-            {% if request.user == user%}
-            <a href="{% url 'update-user' %}"  class="btn btn--main btn--pill">Modyfikacje</a>
+            {% if request.user == user %}
+            <a href="{% url 'create program' %}"  class="btn btn--main btn--pill">Modyfikacje Programów</a>
             {% endif %}
           </div>
         </div>
 
         <div class="roomList__header">
           <div>
-            <h2><a>Programy koncertów</a>
+            <h2><a>Program koncertu "{{program.name}}"</a>
             </h2>
             <hr>
-            {% for program in programs %}
-              <p><a href="{% url 'program' program.id %}" >{{program.name}}</a> </p>
+            {% for composition in compositions %}
+            <p>{{composition.polish_name}} / {{composition.english_name}}</p>
+            {% endfor %}
+
+            {% for composition in all_compositions %}
+            <p>{{composition.polish_name}} / {{composition.english_name}}</p>
             {% endfor %}
           </div>
         </div>
       </div>
       <!-- Room List End -->
-
-      <!-- Activities Start -->
-      <!-- Activities End -->
     </div>
   </main>
 {% endblock content %}  

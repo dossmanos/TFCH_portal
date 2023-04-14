@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
-from .models import ChatRoom, ChatTopic, SystemMessage, User, Pianist
-from .forms import ChatRoomForm, UserForm, MyUserCreationForm
+from .models import ChatRoom, ChatTopic, SystemMessage, User, Program, Composition
+from .forms import ChatRoomForm, UserForm, MyUserCreationForm, ProgramForm
 # Create your views here.
 
 def login_page(request):
@@ -64,8 +64,29 @@ def home_page(request):
     room_count = list_of_rooms.count()
     room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
     topics = ChatTopic.objects.all()[0:5]
-    context = {'rooms':list_of_rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages}
+    programs = Program.objects.all()
+    context = {'rooms':list_of_rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages, 'programs':programs}
     return render(request,'base/home.html',context)
+
+@login_required(login_url='login')
+def create_a_program(request):
+    program_form = ProgramForm()
+    if request.method =='POST':
+        Program.objects.create(
+            name = request.POST.get('name'),
+        )
+        created_program = Program.objects.get(name=request.POST.get('name'))
+        primary_key = created_program.id
+        return redirect('program',primary_key)
+    context = {'form':program_form}
+    return render(request,'base/new_program_form.html', context)
+
+def program(request,primary_key):
+    program = Program.objects.get(id=primary_key)
+    compositions = program.compositions.all()
+    all_compositions = Composition.objects.all()
+    context = {'program':program, 'compositions': compositions, 'all_compositions':all_compositions}  
+    return render(request,'base/program.html',context)
 
 def room(request,primary_key):
     chat_room_number = ChatRoom.objects.get(id=primary_key)  
@@ -80,15 +101,18 @@ def room(request,primary_key):
         chat_room_number.chat_participants.add(request.user)
         return redirect('chat room',primary_key=chat_room_number.id)
     
-    dictionary_model = {'room':chat_room_number,'room_messages':room_messages, 'chat_participants':chat_participants}    
-    return render(request,'base/chat_room.html',dictionary_model)
+    context = {'room':chat_room_number,'room_messages':room_messages, 'chat_participants':chat_participants}    
+    return render(request,'base/chat_room.html',context)
 
 def user_profile(request, primary_key):
     user_number = User.objects.get(id=primary_key)
     rooms = user_number.chatroom_set.all()
     room_messages = user_number.systemmessage_set.all()
     topics = ChatTopic.objects.all()
-    context = {'user':user_number, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics}
+    programs= Program.objects.all()
+    #program = program_number.programs_set.all() 
+    #compositions = programs.compositions_set.all()
+    context = {'user':user_number, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,'programs':programs,}
     return render(request,'base/user_profile.html', context)
 
 @login_required(login_url='login')

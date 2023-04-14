@@ -15,7 +15,7 @@
                 </path>
               </svg>
             </a>
-            <h3>Stwórz/Modyfikuj Program</h3>
+            <h3>Stwórz nowy program</h3>
           </div>
         </div>
         <div class="layout__body">
@@ -23,26 +23,10 @@
             {% csrf_token %}
 
             <div class="form__group">
-              <label for="room_topic">Temat</label>
-              <input required type="text" value="{{room.room_topic.topic_name}}" name="topic" list="topic-list"/>
-              <datalist id="topic-list">
-                <select id="room_topic">
-                  {% for topic in topics %}
-                  <option value="{{topic.topic_name}}">{{topic.topic_name}}</option>
-                  {% endfor %}
-                </select>
-              </datalist> 
+              <label for="room_topic">Nazwa Programu</label>
+              <input required type="text" value="" name="name" list="topic-list"/>
             </div>
 
-            <div class="form__group">
-              <label for="room_name">Nazwa Programu</label>
-              {{form.name}}
-            </div>
-          
-            <div class="form__group">
-              <label for="room_description">Opis</label>
-              {{form.description}}
-            </div>
 
             <div class="form__action">
               <a class="btn btn--dark" href="{% url 'home page' %}">Anuluj</a>
