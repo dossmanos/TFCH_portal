@@ -88,6 +88,10 @@ def program(request,primary_key):
     context = {'program':program, 'compositions': compositions, 'all_compositions':all_compositions}  
     return render(request,'base/program.html',context)
 
+def modify_program(request,primary_key):
+    context = {}  
+    return render(request,'base/modify_program.html',context)
+
 def room(request,primary_key):
     chat_room_number = ChatRoom.objects.get(id=primary_key)  
     room_messages = chat_room_number.systemmessage_set.all() #reference to model SystemMessage
