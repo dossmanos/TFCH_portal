@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-{% extends 'main.html' %}
+{% extends 'main_template.html' %}
 
-<label for="pet-select">Choose a pet:</label>
-
-<select name="pets" id="pet-select">
-    <option value="">--Please choose an option--</option>
-    <option value="dog">Dog</option>
-    <option value="cat">Cat</option>
-    <option value="hamster">Hamster</option>
-    <option value="parrot">Parrot</option>
-    <option value="spider">Spider</option>
-    <option value="goldfish">Goldfish</option>
-</select>
+{% block content %}
+<form method="post" action="">
+    <select name="composition" id="composition_select" form="modify_program">
+        <option value="">Dodaj utwór do programu</option>
+        {%  for composition in all_compositions %}
+        <option value="{{composition.polish_name}}">{{composition.polish_name}}</option>
+        {% endfor %}
+    </select>
+</form>
+{% endblock content %}
