@@ -89,7 +89,12 @@ def program(request,primary_key):
     return render(request,'base/program.html',context)
 
 def modify_program(request,primary_key):
-    context = {}  
+    program = Program.objects.get(id=primary_key)
+    all_compositions = Composition.objects.all()
+    if request.method == 'POST':
+        program.compositions.add(request.composition_select)
+
+    context = {'program':program, 'primary_key':program.id, 'all_compositions':all_compositions}   
     return render(request,'base/modify_program.html',context)
 
 def room(request,primary_key):

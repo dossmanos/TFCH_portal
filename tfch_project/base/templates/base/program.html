@@ -15,7 +15,7 @@
           <div class="profile__info">
             <h3>{{user.get_full_name}}</h3>
             {% if request.user == user %}
-            <a href="{% url 'modify program' %}"  class="btn btn--main btn--pill">Modyfikacje Programów</a>
+            <a href="{% url 'modify program' program.id %}"  class="btn btn--main btn--pill">Modyfikacje Programów</a>
             {% endif %}
           </div>
         </div>

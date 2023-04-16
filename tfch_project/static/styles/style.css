@@ -402,16 +402,16 @@ a {
 }
 
 .layout--3 > .container > div:first-child {
-  flex-basis: 70%;
-  max-width: 70%;
+  flex-basis: 90%;
+  max-width: 90%;
 }
 
 .layout--3 > .container > div:nth-child(2) {
-  flex-basis: 70%;
+  flex-basis: 90%;
 }
 
 .layout--3 > .container > div:last-child {
-  flex-basis: 70%;
+  flex-basis: 90%;
 }
 
 .layout--2 > .container > div:first-child {
@@ -638,7 +638,7 @@ a {
 .roomList__header p {
   font-weight: 500;
   color: var(--color-dark-light);
-  width:400px
+  width:600px
 }
 
 /*========== Room List Room ==========*/

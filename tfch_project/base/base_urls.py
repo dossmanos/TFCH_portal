@@ -23,5 +23,5 @@ urlpatterns = [
 
     path('program/<str:primary_key>/', views.program, name='program'),
     path('program/', views.create_a_program, name='create program'),
-    path('program-modification/<str:primary_key>/', views.modify_program, name='modify program'),
+    path('modification/<str:primary_key>/', views.modify_program, name='modify program'),
 ]
