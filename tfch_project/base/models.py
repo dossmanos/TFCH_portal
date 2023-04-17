@@ -16,13 +16,13 @@ class Program(models.Model):
     #pianist = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=100, null=True, unique=True)
     compositions = models.ManyToManyField(Composition, related_name='compositions', blank=True)
+    date = models.DateTimeField(name='date', null=True)
     def __str__(self):
         return self.name    
 
 class Pianist(models.Model):
     pianist = models.OneToOneField(User,on_delete=models.CASCADE)
     programs = models.ManyToManyField(Program, related_name='programs',blank=True)
-    next_concert = models.DateField(name='next_concert')
     def __str__(self):
         return self.pianist.get_full_name()
     avatar = models.ImageField(null=True, default='avatar.svg')

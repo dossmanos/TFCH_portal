@@ -74,6 +74,7 @@ def create_a_program(request):
     if request.method =='POST':
         Program.objects.create(
             name = request.POST.get('name'),
+            date = request.POST.get('date')
         )
         created_program = Program.objects.get(name=request.POST.get('name'))
         primary_key = created_program.id
@@ -90,11 +91,12 @@ def program(request,primary_key):
 
 def modify_program(request,primary_key):
     program = Program.objects.get(id=primary_key)
+    compositions = program.compositions.all()
     all_compositions = Composition.objects.all()
     if request.method == 'POST':
-        program.compositions.add(request.composition_select)
+        program.compositions.add(request.POST.get('composition_select'))
 
-    context = {'program':program, 'primary_key':program.id, 'all_compositions':all_compositions}   
+    context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
     return render(request,'base/modify_program.html',context)
 
 def room(request,primary_key):
