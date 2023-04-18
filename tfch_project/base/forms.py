@@ -17,6 +17,7 @@ class UserForm(ModelForm):
     class Meta:
         model = Pianist
         fields = '__all__'
+        exclude = ['pianist','programs']
 
 class ProgramForm(ModelForm):
     class Meta:

@@ -6,42 +6,30 @@
     <div>
       <br>
       <h2><a>Program koncertu "{{program.name}}"</a></h2>
-      <h2><a>{{program.date}}</a></h2>
       <hr>
       {% for composition in compositions %}
       <p>{{composition.polish_name}} / {{composition.english_name}}</p>
       {% endfor %}
       <br>
-      <h2><a>Program koncertu "{{program.name}}"</a></h2>
-      <hr>
-      {% for composition in all_compositions %}
-      <p>{{composition.polish_name}} / {{composition.english_name}}</p>
-      {% endfor %}
     </div>
 </div>
 
-<form method="post" action="">
+<form method="post" action="" id="modify_program">
     {% csrf_token %} 
-    <div class="form__group">
-        <label for="room_topic">Data koncertu</label>
-        <input required type="date" value="{{program.date}}" id="date" name="date"/>
-        <input required type="submit" value="Modyfikuj" id="set_date" name="set_date"/>
-    </div>
-    <select name="composition" id="composition_select" form="composition_select">
+    <select name="composition" id="composition_select" form="modify_program">
         <option value="">Dodaj utwór do programu</option>
         {%  for composition in all_compositions %}
-        <option value="{{composition.polish_name}}">{{composition.polish_name}}</option>
+        <option value="{{composition.id}}">{{composition.polish_name}}</option>
         {% endfor %}
     </select>  
-
-    <a class="btn btn--main" href="{% url 'modify program' program.id %}">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32">
-        <title>add</title>
-        <path
-            d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"
-        ></path>
-        </svg>
-        Dodaj do programu
-    </a>
+    <div class="form__group">
+        <input required type="submit" value="Dodaj do programu" id="add" name="add"/>
+    </div>
+    <div class="form__group">
+        <input required type="submit" value="Usuń z programu" id="remove" name="remove"/>
+    </div>
+    <div class="form__group">
+        <input required type="submit" value="Usuń wszystkie utwory" id="remove all" name="remove all"/>
+    </div>
 </form>  
 {% endblock content %}

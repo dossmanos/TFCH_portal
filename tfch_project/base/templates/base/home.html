@@ -23,16 +23,8 @@
                 <input name="q" placeholder="Search for posts" />
               </label>
             </form>
-            <div class="mobile-menuItems">
-              <a class="btn btn--main btn--pill" href="{% url 'topics' %}">Przeglądaj tematy</a>
-              <a class="btn btn--main btn--pill" href="{% url 'activities' %}">Ostatnia aktywność</a>
-            </div>
           </div>
           <div class="roomList__header">
-            <div>
-              <h2>Konwersacje</h2>
-              <p>{{room_count}} dostępnych wątków</p>
-            </div>
             <a class="btn btn--main" href="{% url 'create program' %}">
               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32">
                 <title>add</title>

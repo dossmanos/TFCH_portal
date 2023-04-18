@@ -74,10 +74,10 @@ def create_a_program(request):
     if request.method =='POST':
         Program.objects.create(
             name = request.POST.get('name'),
-            date = request.POST.get('date')
         )
         created_program = Program.objects.get(name=request.POST.get('name'))
         primary_key = created_program.id
+        created_program.programs.add(request.user.pianist)
         return redirect('program',primary_key)
     context = {'form':program_form}
     return render(request,'base/new_program_form.html', context)
@@ -85,8 +85,11 @@ def create_a_program(request):
 def program(request,primary_key):
     program = Program.objects.get(id=primary_key)
     compositions = program.compositions.all()
-    all_compositions = Composition.objects.all()
-    context = {'program':program, 'compositions': compositions, 'all_compositions':all_compositions}  
+    if request.method == 'POST':
+            program.delete()
+            return redirect('home page')
+    
+    context = {'program':program, 'compositions': compositions}  
     return render(request,'base/program.html',context)
 
 def modify_program(request,primary_key):
@@ -94,7 +97,16 @@ def modify_program(request,primary_key):
     compositions = program.compositions.all()
     all_compositions = Composition.objects.all()
     if request.method == 'POST':
-        program.compositions.add(request.POST.get('composition_select'))
+        try:
+            if 'add' in request.POST:
+                program.compositions.add(request.POST.get('composition'))
+            elif 'remove' in request.POST:
+                program.compositions.remove(request.POST.get('composition'))
+            elif 'remove all' in request.POST:
+                program.compositions.clear()
+        except:
+            return HttpResponse("No composition was chosen")       
+
 
     context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
     return render(request,'base/modify_program.html',context)
