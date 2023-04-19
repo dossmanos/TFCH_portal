@@ -13,14 +13,14 @@ class Composition(models.Model):
         return self.polish_name
     
 class Program(models.Model):
-    #pianist = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    pianist = models.ManyToManyField(User, related_name='program_pianist',blank=True)
     name = models.CharField(max_length=100, null=True, unique=True)
     compositions = models.ManyToManyField(Composition, related_name='compositions', blank=True)
     def __str__(self):
         return self.name    
 
 class Pianist(models.Model):
-    pianist = models.OneToOneField(User,on_delete=models.CASCADE)
+    pianist = models.OneToOneField(User,on_delete=models.CASCADE, null=True)
     programs = models.ManyToManyField(Program, related_name='programs',blank=True)
     def __str__(self):
         return self.pianist.get_full_name()

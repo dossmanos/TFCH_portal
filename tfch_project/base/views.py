@@ -4,9 +4,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
-from .models import ChatRoom, ChatTopic, SystemMessage, User, Program, Composition
+from .models import ChatRoom, ChatTopic, SystemMessage, User, Program, Composition, Pianist
 from .forms import ChatRoomForm, UserForm, MyUserCreationForm, ProgramForm
+import datetime,calendar
 # Create your views here.
+
+def error(request, error_message:str):
+    context = {'message': error_message}
+    return render(request,'base/error.html', context)
+    # return render(request,'base/error.html',{'message':"........your message here......"}) 
+    # sample code to inform user about something
 
 def login_page(request):
     page = 'login'
@@ -61,24 +68,32 @@ def home_page(request):
         Q(description__icontains=q) |
         Q(host__username__icontains=q)
         )
-    room_count = list_of_rooms.count()
-    room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
-    topics = ChatTopic.objects.all()[0:5]
+    current_time = datetime.date.today()
+    pianists = Pianist.objects.all()
+    #room_count = list_of_rooms.count()
+    #room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
+    #topics = ChatTopic.objects.all()[0:5]
     programs = Program.objects.all()
-    context = {'rooms':list_of_rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages, 'programs':programs}
+    for program in programs:
+        program_pianist = program.pianist.all()
+    context = {'rooms':list_of_rooms, 'programs':programs, 'time':current_time, "pianists":pianists, 'program_pianist':program_pianist}
     return render(request,'base/home.html',context)
 
 @login_required(login_url='login')
 def create_a_program(request):
     program_form = ProgramForm()
+    user = request.user
+    pianist = user.pianist
     if request.method =='POST':
         Program.objects.create(
             name = request.POST.get('name'),
         )
         created_program = Program.objects.get(name=request.POST.get('name'))
+        created_program.pianist.add(user)
+        pianist.programs.add(created_program)
         primary_key = created_program.id
-        created_program.programs.add(request.user.pianist)
         return redirect('program',primary_key)
+    
     context = {'form':program_form}
     return render(request,'base/new_program_form.html', context)
 
@@ -105,7 +120,7 @@ def modify_program(request,primary_key):
             elif 'remove all' in request.POST:
                 program.compositions.clear()
         except:
-            return HttpResponse("No composition was chosen")       
+            return render(request,'base/error.html',{'message':"Nie wybrano kompozycji. Spróbuj ponownie wybierając jakąś kompozycję z listy"})      
 
 
     context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
@@ -132,7 +147,7 @@ def user_profile(request, primary_key):
     rooms = user_number.chatroom_set.all()
     room_messages = user_number.systemmessage_set.all()
     topics = ChatTopic.objects.all()
-    programs= Program.objects.all()
+    programs= Program.objects.filter(pianist=user_number)
     #program = program_number.programs_set.all() 
     #compositions = programs.compositions_set.all()
     context = {'user':user_number, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,'programs':programs,}
@@ -205,7 +220,6 @@ def delete_a_post(request, primary_key):
 @login_required(login_url='login')
 def update_user(request): 
     user = request.user
-    pianist =request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES ,instance=user)
@@ -220,7 +234,3 @@ def topics_page(request):
     topics = ChatTopic.objects.filter(Q(topic_name__icontains=q))
     context = {'topics':topics}
     return render(request, 'base/topics.html', context)
-
-def activities_page(request):
-    room_messages = SystemMessage.objects.all()
-    return render(request, 'base/activity.html', {'room_messages':room_messages})

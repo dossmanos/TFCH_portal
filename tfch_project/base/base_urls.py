@@ -19,9 +19,10 @@ urlpatterns = [
     path('delete-post/<str:primary_key>/', views.delete_a_post, name='delete-post'),
     
     path('topics/', views.topics_page, name='topics'),
-    path('activities/', views.activities_page, name='activities'),
 
     path('program/<str:primary_key>/', views.program, name='program'),
     path('program/', views.create_a_program, name='create program'),
     path('modification/<str:primary_key>/', views.modify_program, name='modify program'),
+
+    path('error/',views.error,name='error'),
 ]

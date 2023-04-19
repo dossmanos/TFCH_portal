@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends 'main_template.html' %}
+
+{% block content %}
+<main class="profile-page layout layout--3">
+  <div class="container">
+    <div class="roomList">
+      <div class="roomList__header">
+        <div>
+          <h2><a>{{message}}</a></h2>
+          <br>
+          <a class="btn btn--main" href="{% url 'user profile' user.id %}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewbox="0 0 32 32">
+              <title>back</title>
+              <path
+                  d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+              </path>
+            </svg>
+            Wstecz
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

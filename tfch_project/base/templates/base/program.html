@@ -4,7 +4,6 @@
 {% block content %} 
   <main class="profile-page layout layout--3">
     <div class="container">
-      <!-- Room List Start -->
       <div class="roomList">
         <div class="profile">
           <div class="profile__avatar">
@@ -27,21 +26,24 @@
             {% endif %}
           </div>
         </form>
-        <div class="roomList__header">
-          <div>
-            <h2><a>Program koncertu "{{program.name}}"</a></h2>
-            <hr>
-            {% if compositions %}
-              {% for composition in compositions %}
-                <p>{{composition.polish_name}} / {{composition.english_name}}</p>
-              {% endfor %}
-            {% else %}
-              <h2><a>PROGRAM NIE ZAWIERA OBECNIE KOMPOZYCJI</a></h2>
-            {% endif %}
-          </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="container">
+      <div class="roomList__header">
+        <div>
+          <h2><a>Program koncertu "{{program.name}}"</a></h2>
+          <hr>
+          {% if compositions %}
+            {% for composition in compositions %}
+              <p>{{composition.polish_name}} / {{composition.english_name}}</p>
+            {% endfor %}
+          {% else %}
+            <h2><a>PROGRAM NIE ZAWIERA OBECNIE KOMPOZYCJI</a></h2>
+          {% endif %}
         </div>
       </div>
-      <!-- Room List End -->
     </div>
   </main>
 {% endblock content %}  

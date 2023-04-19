@@ -4,10 +4,6 @@
 {% block content %} 
   <main class="profile-page layout layout--3">
     <div class="container">
-      <!-- Topics Start -->
-      <!-- Topics End -->
-
-      <!-- Room List Start -->
       <div class="roomList">
         <div class="profile">
           <div class="profile__avatar">
@@ -38,16 +34,16 @@
             <h2><a>Programy koncertów</a>
             </h2>
             <hr>
-            {% for program in programs %}
-              <p><a href="{% url 'program' program.id %}" >{{program.name}}</a> </p>
-            {% endfor %}
+            {% if programs %}
+              {% for program in programs %}
+                <p><a href="{% url 'program' program.id %}" >{{program.name}}</a> </p>
+              {% endfor %}
+            {% else %}
+               <p>BRAK PROGRAMÓW DO WYŚWIETLENIA</p>
+            {% endif %}
           </div>
         </div>
       </div>
-      <!-- Room List End -->
-
-      <!-- Activities Start -->
-      <!-- Activities End -->
     </div>
   </main>
 {% endblock content %}  
