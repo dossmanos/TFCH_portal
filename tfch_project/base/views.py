@@ -74,10 +74,9 @@ def home_page(request):
     #room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
     #topics = ChatTopic.objects.all()[0:5]
     programs = Program.objects.all()
-    dictionary = {}
     for program in programs:
-        dictionary.update({'program_pianist':program.program_pianist})
-    context = {'rooms':list_of_rooms, 'programs':programs, 'time':current_time, "pianists":pianists, 'dictionary':dictionary}
+        program_pianist = program.pianist.all()
+    context = {'rooms':list_of_rooms, 'programs':programs, 'time':current_time, "pianists":pianists, 'program_pianist':program_pianist}
     return render(request,'base/home.html',context)
 
 @login_required(login_url='login')
