@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import ChatRoom, User, Pianist, Program
+from .models import ChatRoom, User, Pianist, Program, Concert
 from django.contrib.auth.forms import UserCreationForm
 
 class MyUserCreationForm(UserCreationForm):
@@ -24,6 +24,11 @@ class ProgramForm(ModelForm):
         model = Program
         fields = '__all__'
         exclude = ['compositions']
+
+class ConcertForm(ModelForm):
+    class Meta:
+        model = Concert
+        fields = '__all__'
 
 class ProgramModificationForm(ModelForm):
     class Meta:

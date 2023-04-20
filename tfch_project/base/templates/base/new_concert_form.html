@@ -15,17 +15,31 @@
                 </path>
               </svg>
             </a>
-            <h3>Stwórz nowy program</h3>
+            <h3>Dodaj nowy koncert</h3>
           </div>
         </div>
+
         <div class="layout__body">
           <form class="form" action="" method="post">
             {% csrf_token %}
 
+            <select name="concert_pianist" id="pianist_select" form="select_pianist">
+                <option value="">Wybierz wykonawcę</option>
+                {%  for pianist in pianists %}
+                  <option value="{{pianist.pianist.id}}">{{pianist.pianist.get_full_name}}</option>
+                {% endfor %}
+            </select> 
+            <select name="concert_program" id="program_select" form="select_program">
+                <option value="">Wybierz program</option>
+                {%  for program in programs %}
+                  <option value="{{program.id}}">{{program.name}}</option>
+                {% endfor %}
+            </select> 
             <div class="form__group">
-              <label for="room_topic">Nazwa Programu</label>
-              <input required type="text" value="" name="name" list="topic-list"/>
+              <label for="room_topic">Data</label>
+              <input required type="datetime" value="" name="date" list="topic-list" placeholder="Format daty: 2023-04-21 18:00:00"/>
             </div>
+
             <div class="form__action">
               <a class="btn btn--dark" href="{% url 'home page' %}">Anuluj</a>
               <button class="btn btn--main" type="submit">Akceptuj</button>

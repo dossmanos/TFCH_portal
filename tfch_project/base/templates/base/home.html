@@ -48,12 +48,14 @@
                       {%  for program in programs %}
                       <div>
                         <br>
+                        <h2><a>Koncert {{program.date}}</a></h2>
                         <hr>
-                        <h2><a>{{program.name}}</a></h2>
-                        <h2><a>{{program.program_pianist__all}}</a></h2>
+                        <p><a>{{program.program_pianist.get_full_name}}</a></p>
+                        <p><a>{{program.name}}</a></p>
                       </div>
+
                       <select name="pianist" id="pianist_select" form="select_pianist">
-                          <option value="{{program.pianist.id}}">Wybierz innego pianistę</option>
+                          <option value="{{program.program_pianist.id}}">Zmień wykonawcę</option>
                           {%  for pianist in pianists %}
                             <option value="{{pianist.pianist.id}}">{{pianist.pianist.get_full_name}}</option>
                           {% endfor %}
