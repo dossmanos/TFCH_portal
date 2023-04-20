@@ -102,7 +102,7 @@ def create_a_concert(request):
     concert_form = ConcertForm()
     user = request.user
     if request.method =='POST':
-        if request.user.is_superuser == False:
+        if user.is_superuser == False:
             return render(request,'base/error.html',{'message':"Brak uprawnień do tworzenia koncertów"})
         else:
             Concert.objects.create(
