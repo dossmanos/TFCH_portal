@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'TFCH1_db',
         'USER': 'postgres',
-        'PASSWORD': 'piter2wp',
+        'PASSWORD': '...',
         'HOST': 'localhost',
         'PORT': '5432',
     }
