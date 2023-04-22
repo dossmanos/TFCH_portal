@@ -30,7 +30,10 @@ class Pianist(models.Model):
 class Concert(models.Model):
     concert_pianist = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     concert_program = models.ForeignKey(Program, on_delete=models.SET_NULL, null=True)
-    concert_date = models.DateTimeField(default=datetime.datetime.now())
+    concert_date = models.DateTimeField(default=datetime.datetime.now())   
+    class Meta:
+        ordering = ['concert_date']
+    
 class ChatTopic(models.Model):
     topic_name = models.CharField(max_length=200)
 

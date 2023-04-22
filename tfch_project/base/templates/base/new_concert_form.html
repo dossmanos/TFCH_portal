@@ -20,24 +20,26 @@
         </div>
 
         <div class="layout__body">
-          <form class="form" action="" method="post">
+          <form class="form" action="" method="post" id="new_concert_form">
             {% csrf_token %}
 
-            <select name="concert_pianist" id="pianist_select" form="select_pianist">
+            <select name="concert_pianist" id="pianist_select" form="new_concert_form">
                 <option value="">Wybierz wykonawcę</option>
-                {%  for pianist in pianists %}
-                  <option value="{{pianist.pianist.id}}">{{pianist.pianist.get_full_name}}</option>
+                {%  for user in users %}
+                  <option value="{{user.id}}">{{user.get_full_name}}</option>
                 {% endfor %}
             </select> 
-            <select name="concert_program" id="program_select" form="select_program">
+    
+            <select name="concert_program" id="program_select" form="new_concert_form">
                 <option value="">Wybierz program</option>
                 {%  for program in programs %}
                   <option value="{{program.id}}">{{program.name}}</option>
                 {% endfor %}
             </select> 
+
             <div class="form__group">
               <label for="room_topic">Data</label>
-              <input required type="datetime" value="" name="date" list="topic-list" placeholder="Format daty: 2023-04-21 18:00:00"/>
+              <input required type="datetime" value="2023-01-30 18:00" name="concert_date" form="new_concert_form" list="topic-list"/>
             </div>
 
             <div class="form__action">

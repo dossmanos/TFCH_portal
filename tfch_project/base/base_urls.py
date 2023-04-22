@@ -25,7 +25,7 @@ urlpatterns = [
     path('modification/<str:primary_key>/', views.modify_program, name='modify program'),
 
     path('concert/<str:primary_key>/', views.concert, name='concert'),
-    path('concert/', views.create_a_concert, name='create concert'),
+    path('new_concert/', views.create_a_concert, name='create concert'),
     path('concert_modification/<str:primary_key>/', views.modify_concert, name='modify concert'),
 
     path('error/',views.error,name='error'),

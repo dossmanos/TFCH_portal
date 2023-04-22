@@ -74,9 +74,9 @@ def home_page(request):
     #room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
     #topics = ChatTopic.objects.all()[0:5]
     programs = Program.objects.all()
-    for program in programs:
-        program_pianist = program.pianist.all()
-    context = {'rooms':list_of_rooms, 'programs':programs, 'time':current_time, "pianists":pianists, 'program_pianist':program_pianist}
+    concerts = Concert.objects.all()
+
+    context = {'concerts': concerts, 'programs':programs, 'time':current_time, "pianists":pianists,}
     return render(request,'base/home.html',context)
 
 @login_required(login_url='login')
@@ -101,13 +101,16 @@ def create_a_program(request):
 def create_a_concert(request):
     concert_form = ConcertForm()
     user = request.user
+    users = User.objects.all()
+    programs = Program.objects.all()
+    time = datetime.datetime.now()
     if request.method =='POST':
         if user.is_superuser == False:
             return render(request,'base/error.html',{'message':"Brak uprawnień do tworzenia koncertów"})
         else:
             Concert.objects.create(
-                concert_pianist = request.POST.get('concert_pianist'),
-                concert_program = request.POST.get('concert_program'),
+                concert_pianist = User.objects.get(id=request.POST.get('concert_pianist')),
+                concert_program = Program.objects.get(id=request.POST.get('concert_program')),
                 concert_date = request.POST.get('concert_date'),
             )
             created_concert = Concert.objects.get(concert_date=request.POST.get('concert_date'))
@@ -115,28 +118,29 @@ def create_a_concert(request):
             primary_key = created_concert.id
             return redirect('concert',primary_key)
     
-    context = {'form':concert_form}
+    context = {'form':concert_form, 'programs':programs, 'time':time, 'users': users}
     return render(request,'base/new_concert_form.html', context)
 
 def program(request,primary_key):
     program = Program.objects.get(id=primary_key)
     compositions = program.compositions.all()
     if request.method == 'POST':
-            program.delete()
-            return redirect('home page')
+        program.delete()
+        return redirect('home page')
     
     context = {'program':program, 'compositions': compositions}  
     return render(request,'base/program.html',context)
 
 def concert(request,primary_key):
-    program = Program.objects.get(id=primary_key)
-    compositions = program.compositions.all()
+    concert = Concert.objects.get(id=primary_key)
+    program = concert.concert_program.compositions.all()
+    date = concert.concert_date
     if request.method == 'POST':
-            program.delete()
-            return redirect('home page')
+        concert.delete()
+        return redirect('home page')
     
-    context = {'program':program, 'compositions': compositions}  
-    return render(request,'base/program.html',context)
+    context = {'concert':concert, 'date': date, 'program':program}  
+    return render(request,'base/concert.html',context)
 
 def modify_program(request,primary_key):
     program = Program.objects.get(id=primary_key)
