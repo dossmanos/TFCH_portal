@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends 'main_template.html' %}
+
+{% block content %}
+<main class="profile-page layout layout--3">
+    <div class="container">
+      <div class="roomList">
+        <div class="roomList__header">
+          <div>
+            <br>
+            <h2><a>Program koncertu "{{program.name}}"</a></h2>
+            <hr>
+            {% for composition in compositions %}
+            <p>{{composition.polish_name}} / {{composition.english_name}}</p>
+            {% endfor %}
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+        <div class="roomList">
+            <div class="roomList__header">
+                <form method="post" action="" id="modify_program">
+                    {% csrf_token %} 
+                    <select name="composition" id="composition_select" form="modify_program">
+                        <option value="">Wybierz utwór</option>
+                        {%  for composition in all_compositions %}
+                        <option value="{{composition.id}}">{{composition.polish_name}}</option>
+                        {% endfor %}
+                    </select>  
+                    <br>
+                    <br>
+                    <div class="form__group">
+                        <input required type="submit" value="Dodaj do programu" id="add" name="add"/>
+                    </div>
+                    <div class="form__group">
+                        <input required type="submit" value="Usuń z programu" id="remove" name="remove"/>
+                    </div>
+                    <div class="form__group">
+                        <input required type="submit" value="Usuń wszystkie utwory" id="remove all" name="remove all"/>
+                    </div>
+                </form>   
+            </div>
+        </div>
+    </div>
+  </main>
+
+
+{% endblock content %}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% extends 'main_template.html' %}
+
+{% block content %} 
+  <main class="profile-page layout layout--3">
+    <div class="container">
+      <div class="roomList">
+        <div class="profile">
+          <div class="profile__avatar">
+            <div class="avatar avatar--large active">
+              <img src="{{user.pianist.avatar.url}}" />
+            </div>
+          </div>
+          <div class="profile__info">
+            <h3>{{user.get_full_name}}</h3>
+            {% if request.user == user %}
+            <a href="{% url 'modify program' program.id %}"  class="btn btn--main btn--pill">Modyfikuj Program</a>
+            {% endif %}
+          </div>
+        </div>
+        <form method="post" action="" id="delete program">
+          {% csrf_token %} 
+          <div class="profile__info">
+            {% if request.user == user %}
+             <input class="btn btn--main btn--pill" type="submit" value="Usuń Program" form="delete program"/> 
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="container">
+      <div class="roomList__header">
+        <div>
+          <h2><a>Program koncertu "{{program.name}}"</a></h2>
+          <hr>
+          {% if compositions %}
+            {% for composition in compositions %}
+              <p>{{composition.polish_name}} / {{composition.english_name}}</p>
+            {% endfor %}
+          {% else %}
+            <h2><a>PROGRAM NIE ZAWIERA OBECNIE KOMPOZYCJI</a></h2>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock content %}  

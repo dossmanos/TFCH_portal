@@ -4,9 +4,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
-from .models import ChatRoom, ChatTopic, SystemMessage, User
-from .forms import ChatRoomForm, UserForm, MyUserCreationForm
+from .models import ChatRoom, ChatTopic, SystemMessage, User, Program, Composition, Pianist, Concert
+from .forms import ChatRoomForm, UserForm, MyUserCreationForm, ProgramForm, ConcertForm
+import datetime
 # Create your views here.
+
+def error(request, error_message:str):
+    context = {'message': error_message}
+    return render(request,'base/error.html', context)
+    # return render(request,'base/error.html',{'message':"........your message here......"}) 
+    # sample code to inform user about something
 
 def login_page(request):
     page = 'login'
@@ -14,21 +21,21 @@ def login_page(request):
         return redirect('home page')
 
     if request.method == "POST":
-        email=request.POST.get('email')
+        username=request.POST.get('username')
         password=request.POST.get('password')
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username=username)
         except:   
             messages.error(request, 'Specified user does not exist')
 
-        user = authenticate(request, email=email, password=password)    
+        user = authenticate(request, username=username, password=password)    
 
         if user is not None:
             login(request, user)   
             return redirect('home page')
         else:
-            messages.error(request, 'User name or password is INVALID')
+            messages.error(request, 'Nieprawidłowa nazwa użytkownika lub hasło')
 
     context = {'page':page}    
     return render(request,'base/login_form.html', context)
@@ -61,11 +68,113 @@ def home_page(request):
         Q(description__icontains=q) |
         Q(host__username__icontains=q)
         )
-    room_count = list_of_rooms.count()
-    room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
-    topics = ChatTopic.objects.all()[0:5]
-    context = {'rooms':list_of_rooms, 'topics':topics, 'room_count':room_count, 'room_messages':room_messages}
+    current_time = datetime.date.today()
+    pianists = Pianist.objects.all()
+    #room_count = list_of_rooms.count()
+    #room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
+    #topics = ChatTopic.objects.all()[0:5]
+    programs = Program.objects.all()
+    for program in programs:
+        program_pianist = program.pianist.all()
+    context = {'rooms':list_of_rooms, 'programs':programs, 'time':current_time, "pianists":pianists, 'program_pianist':program_pianist}
     return render(request,'base/home.html',context)
+
+@login_required(login_url='login')
+def create_a_program(request):
+    program_form = ProgramForm()
+    user = request.user
+    pianist = user.pianist
+    if request.method =='POST':
+        Program.objects.create(
+            program_pianist = request.user,
+            name = request.POST.get('name'),
+        )
+        created_program = Program.objects.get(name=request.POST.get('name'))
+        pianist.programs.add(created_program)
+        primary_key = created_program.id
+        return redirect('program',primary_key)
+    
+    context = {'form':program_form}
+    return render(request,'base/new_program_form.html', context)
+
+@login_required(login_url='login')
+def create_a_concert(request):
+    concert_form = ConcertForm()
+    user = request.user
+    if request.method =='POST':
+        if user.is_superuser == False:
+            return render(request,'base/error.html',{'message':"Brak uprawnień do tworzenia koncertów"})
+        else:
+            Concert.objects.create(
+                concert_pianist = request.POST.get('concert_pianist'),
+                concert_program = request.POST.get('concert_program'),
+                concert_date = request.POST.get('concert_date'),
+            )
+            created_concert = Concert.objects.get(concert_date=request.POST.get('concert_date'))
+            #calendar.concerts.add(created_concert)
+            primary_key = created_concert.id
+            return redirect('concert',primary_key)
+    
+    context = {'form':concert_form}
+    return render(request,'base/new_concert_form.html', context)
+
+def program(request,primary_key):
+    program = Program.objects.get(id=primary_key)
+    compositions = program.compositions.all()
+    if request.method == 'POST':
+            program.delete()
+            return redirect('home page')
+    
+    context = {'program':program, 'compositions': compositions}  
+    return render(request,'base/program.html',context)
+
+def concert(request,primary_key):
+    program = Program.objects.get(id=primary_key)
+    compositions = program.compositions.all()
+    if request.method == 'POST':
+            program.delete()
+            return redirect('home page')
+    
+    context = {'program':program, 'compositions': compositions}  
+    return render(request,'base/program.html',context)
+
+def modify_program(request,primary_key):
+    program = Program.objects.get(id=primary_key)
+    compositions = program.compositions.all()
+    all_compositions = Composition.objects.all()
+    if request.method == 'POST':
+        try:
+            if 'add' in request.POST:
+                program.compositions.add(request.POST.get('composition'))
+            elif 'remove' in request.POST:
+                program.compositions.remove(request.POST.get('composition'))
+            elif 'remove all' in request.POST:
+                program.compositions.clear()
+        except:
+            return render(request,'base/error.html',{'message':"Nie wybrano kompozycji. Spróbuj ponownie wybierając jakąś kompozycję z listy"})      
+
+
+    context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
+    return render(request,'base/modify_program.html',context)
+
+def modify_concert(request,primary_key):
+    program = Program.objects.get(id=primary_key)
+    compositions = program.compositions.all()
+    all_compositions = Composition.objects.all()
+    if request.method == 'POST':
+        try:
+            if 'add' in request.POST:
+                program.compositions.add(request.POST.get('composition'))
+            elif 'remove' in request.POST:
+                program.compositions.remove(request.POST.get('composition'))
+            elif 'remove all' in request.POST:
+                program.compositions.clear()
+        except:
+            return render(request,'base/error.html',{'message':"Nie wybrano kompozycji. Spróbuj ponownie wybierając jakąś kompozycję z listy"})      
+
+
+    context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
+    return render(request,'base/modify_program.html',context)
 
 def room(request,primary_key):
     chat_room_number = ChatRoom.objects.get(id=primary_key)  
@@ -80,15 +189,18 @@ def room(request,primary_key):
         chat_room_number.chat_participants.add(request.user)
         return redirect('chat room',primary_key=chat_room_number.id)
     
-    dictionary_model = {'room':chat_room_number,'room_messages':room_messages, 'chat_participants':chat_participants}    
-    return render(request,'base/chat_room.html',dictionary_model)
+    context = {'room':chat_room_number,'room_messages':room_messages, 'chat_participants':chat_participants}    
+    return render(request,'base/chat_room.html',context)
 
 def user_profile(request, primary_key):
     user_number = User.objects.get(id=primary_key)
     rooms = user_number.chatroom_set.all()
     room_messages = user_number.systemmessage_set.all()
     topics = ChatTopic.objects.all()
-    context = {'user':user_number, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics}
+    programs= Program.objects.filter(program_pianist=user_number)
+    #program = program_number.programs_set.all() 
+    #compositions = programs.compositions_set.all()
+    context = {'user':user_number, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,'programs':programs,}
     return render(request,'base/user_profile.html', context)
 
 @login_required(login_url='login')
@@ -157,7 +269,7 @@ def delete_a_post(request, primary_key):
 
 @login_required(login_url='login')
 def update_user(request): 
-    user = request.user  
+    user = request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
         form = UserForm(request.POST, request.FILES ,instance=user)
@@ -172,7 +284,3 @@ def topics_page(request):
     topics = ChatTopic.objects.filter(Q(topic_name__icontains=q))
     context = {'topics':topics}
     return render(request, 'base/topics.html', context)
-
-def activities_page(request):
-    room_messages = SystemMessage.objects.all()
-    return render(request, 'base/activity.html', {'room_messages':room_messages})
