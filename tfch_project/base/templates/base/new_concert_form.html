@@ -21,14 +21,18 @@
                   <option value="{{user.id}}">{{user.get_full_name}}</option>
                 {% endfor %}
             </select> 
-    
+
             <select name="concert_program" id="program_select" form="new_concert_form">
                 <option value="">Wybierz program</option>
-                {%  for program in programs %}
-                  <option value="{{program.id}}">{{program.name}}</option>
+                {% for pianist in pianists %}
+                  <optgroup label="{{pianist.pianist.get_full_name}}"></optgroup>
+                  {% for program in programs %}
+                    {% if program.program_pianist.get_full_name == pianist.pianist.get_full_name %}
+                      <option value="{{program.id}}">{{program.name}}</option>
+                    {% endif %}
+                  {% endfor %}
                 {% endfor %}
             </select> 
-            
             <div>
               <br>
             </div>

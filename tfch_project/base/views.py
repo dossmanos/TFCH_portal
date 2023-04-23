@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from django.contrib import messages
-from .models import ChatRoom, ChatTopic, SystemMessage, User, Program, Composition, Pianist, Concert
-from .forms import ChatRoomForm, UserForm, MyUserCreationForm, ProgramForm, ConcertForm
+from .models import User, Program, Composition, Pianist, Concert
+from .forms import UserForm, MyUserCreationForm, ProgramForm, ConcertForm
 import datetime
 # Create your views here.
 
@@ -62,12 +62,11 @@ def register_user(request):
 
 def home_page(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''  
-    list_of_rooms = ChatRoom.objects.filter(
-        Q(room_topic__topic_name__icontains=q) |
-        Q(name__icontains=q) |
-        Q(description__icontains=q) |
-        Q(host__username__icontains=q)
-        )
+    # list_of_concerts = Concert.objects.filter(
+    #     Q(concert_pianist__icontains=q) |
+    #     Q(concert_date__icontains=q) |
+    #     Q(concert_program__icontains=q)
+    #     )
     current_time = datetime.date.today()
     pianists = Pianist.objects.all()
     #room_count = list_of_rooms.count()
@@ -86,15 +85,17 @@ def create_a_program(request):
     user = request.user
     pianist = user.pianist
     if request.method =='POST':
-        Program.objects.create(
-            program_pianist = request.user,
-            name = request.POST.get('name'),
-        )
-        created_program = Program.objects.get(name=request.POST.get('name'))
-        pianist.programs.add(created_program)
-        primary_key = created_program.id
-        return redirect('program',primary_key)
-    
+        try:
+            Program.objects.create(
+                program_pianist = request.user,
+                name = request.POST.get('name'),
+            )
+            created_program = Program.objects.get(name=request.POST.get('name'))
+            pianist.programs.add(created_program)
+            primary_key = created_program.id
+            return redirect('program',primary_key)
+        except:
+            return render(request,'base/error.html',{'message':"Nazwa programu nie może się powtarzać"}) 
     context = {'form':program_form}
     return render(request,'base/new_program_form.html', context)
 
@@ -104,22 +105,25 @@ def create_a_concert(request):
     user = request.user
     users = User.objects.all()
     programs = Program.objects.all()
+    pianists = Pianist.objects.all()
     time = datetime.datetime.now()
     if request.method =='POST':
         if user.is_superuser == False:
             return render(request,'base/error.html',{'message':"Brak uprawnień do tworzenia koncertów"})
         else:
-            Concert.objects.create(
-                concert_pianist = User.objects.get(id=request.POST.get('concert_pianist')),
-                concert_program = Program.objects.get(id=request.POST.get('concert_program')),
-                concert_date = request.POST.get('concert_date'),
-            )
-            created_concert = Concert.objects.get(concert_date=request.POST.get('concert_date'))
-            #calendar.concerts.add(created_concert)
-            primary_key = created_concert.id
-            return redirect('concert',primary_key)
-    
-    context = {'form':concert_form, 'programs':programs, 'time':time, 'users': users}
+            try:
+                Concert.objects.create(
+                    concert_pianist = User.objects.get(id=request.POST.get('concert_pianist')),
+                    concert_program = Program.objects.get(id=request.POST.get('concert_program')),
+                    concert_date = request.POST.get('concert_date'),
+                )
+                created_concert = Concert.objects.get(concert_date=request.POST.get('concert_date'))
+                primary_key = created_concert.id
+                return redirect('concert',primary_key)
+            except:
+                return render(request,'base/error.html',{'message':"W bazie jest już koncert z identyczną datą"}) 
+            
+    context = {'form':concert_form, 'programs':programs, 'time':time, 'users': users, 'pianists':pianists}
     return render(request,'base/new_concert_form.html', context)
 
 def program(request,primary_key):
@@ -163,9 +167,10 @@ def modify_program(request,primary_key):
     return render(request,'base/modify_program.html',context)
 
 def modify_concert(request,primary_key):
-    program = Program.objects.get(id=primary_key)
-    compositions = program.compositions.all()
-    all_compositions = Composition.objects.all()
+    concert = Concert.objects.get(id=primary_key)
+    pianist = concert.concert_pianist.get_full_name()
+    program = concert.concert_program.compositions.all()
+    date = concert.concert_date
     if request.method == 'POST':
         try:
             if 'add' in request.POST:
@@ -178,99 +183,19 @@ def modify_concert(request,primary_key):
             return render(request,'base/error.html',{'message':"Nie wybrano kompozycji. Spróbuj ponownie wybierając jakąś kompozycję z listy"})      
 
 
-    context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
+    context = {'concert':concert, 'primary_key':concert.id, 'program': program, 'pianist':pianist, 'date':date}   
     return render(request,'base/modify_program.html',context)
 
-def room(request,primary_key):
-    chat_room_number = ChatRoom.objects.get(id=primary_key)  
-    room_messages = chat_room_number.systemmessage_set.all() #reference to model SystemMessage
-    chat_participants = chat_room_number.chat_participants.all()
-    if request.method == "POST":
-        message = SystemMessage.objects.create(
-            user = request.user,  
-            room = chat_room_number,
-            message_text = request.POST.get('comment_content')
-        )
-        chat_room_number.chat_participants.add(request.user)
-        return redirect('chat room',primary_key=chat_room_number.id)
-    
-    context = {'room':chat_room_number,'room_messages':room_messages, 'chat_participants':chat_participants}    
-    return render(request,'base/chat_room.html',context)
 
 def user_profile(request, primary_key):
     user_number = User.objects.get(id=primary_key)
-    rooms = user_number.chatroom_set.all()
-    room_messages = user_number.systemmessage_set.all()
-    topics = ChatTopic.objects.all()
+    #rooms = user_number.chatroom_set.all()
+    #room_messages = user_number.systemmessage_set.all()
     programs= Program.objects.filter(program_pianist=user_number)
-    #program = program_number.programs_set.all() 
-    #compositions = programs.compositions_set.all()
-    context = {'user':user_number, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,'programs':programs,}
+
+    context = {'user':user_number, 'programs':programs,}
     return render(request,'base/user_profile.html', context)
 
-@login_required(login_url='login')
-def create_a_chat_room(request):
-    chat_room_form = ChatRoomForm()
-    topics = ChatTopic.objects.all()
-    if request.method =='POST':
-        new_topic_name = request.POST.get('topic')
-        topic, creating = ChatTopic.objects.get_or_create(topic_name=new_topic_name)
-        ChatRoom.objects.create(
-            host = request.user,
-            room_topic = topic,
-            name = request.POST.get('name'),
-            description = request.POST.get('description')
-        )
-        return redirect('home page')
-    context = {'form':chat_room_form, 'topics':topics}
-    return render(request,'base/room_form.html', context)
-
-@login_required(login_url='login')
-def update_room(request,primary_key):
-    chat_room_number = ChatRoom.objects.get(id=primary_key)   
-    form = ChatRoomForm(instance=chat_room_number)
-    topics = ChatTopic.objects.all()
-
-    if request.user != chat_room_number.host:
-        return HttpResponse("Access is not allowed")
-
-    if request.method == 'POST':
-        new_topic_name = request.POST.get('topic')
-        topic, creating = ChatTopic.objects.get_or_create(topic_name=new_topic_name)
-        chat_room_number.name = request.POST.get('name')
-        chat_room_number.room_topic = topic
-        chat_room_number.description= request.POST.get('description')
-        chat_room_number.save()
-        return redirect('home page')
-
-    dictionary_model = {'form':form, 'topics':topics, 'room':chat_room_number}   
-    return render(request,'base/room_form.html', dictionary_model)
-
-@login_required(login_url='login')
-def delete_a_chat_room(request, primary_key):
-    chat_room_to_delete = ChatRoom.objects.get(id=primary_key)
-    
-    if request.user != chat_room_to_delete.host:
-        return HttpResponse("Access is not allowed")
-
-    if request.method =='POST':
-        chat_room_to_delete.delete()
-        return redirect('home page')
- 
-    return render(request,'base/delete.html', {'obj': chat_room_to_delete})
-
-@login_required(login_url='login')
-def delete_a_post(request, primary_key):
-    post_to_delete = SystemMessage.objects.get(id=primary_key)
-    
-    if request.user != post_to_delete.user:
-        return HttpResponse("Access is not allowed")
-
-    if request.method =='POST':
-        post_to_delete.delete()
-        return redirect('home page')
- 
-    return render(request,'base/delete.html', {'obj': post_to_delete})
 
 @login_required(login_url='login')
 def update_user(request): 
@@ -284,8 +209,28 @@ def update_user(request):
         
     return render(request,'base/update_user.html', {'form':form})
 
-def topics_page(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''  
-    topics = ChatTopic.objects.filter(Q(topic_name__icontains=q))
-    context = {'topics':topics}
-    return render(request, 'base/topics.html', context)
+# @login_required(login_url='login')
+# def delete_a_chat_room(request, primary_key):
+#     chat_room_to_delete = ChatRoom.objects.get(id=primary_key)
+    
+#     if request.user != chat_room_to_delete.host:
+#         return HttpResponse("Access is not allowed")
+
+#     if request.method =='POST':
+#         chat_room_to_delete.delete()
+#         return redirect('home page')
+ 
+#     return render(request,'base/delete.html', {'obj': chat_room_to_delete})
+
+# @login_required(login_url='login')
+# def delete_a_post(request, primary_key):
+#     post_to_delete = SystemMessage.objects.get(id=primary_key)
+    
+#     if request.user != post_to_delete.user:
+#         return HttpResponse("Access is not allowed")
+
+#     if request.method =='POST':
+#         post_to_delete.delete()
+#         return redirect('home page')
+ 
+#     return render(request,'base/delete.html', {'obj': post_to_delete})
