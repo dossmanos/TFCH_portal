@@ -26,7 +26,8 @@
     <div class="container">
       <div class="roomList__header">
         <div>
-          <h3><a>{{concert.concert_date}}</a></h3>
+          <h2><a class="btn btn--main" href="{% url 'concert' concert.id %}">Koncert {{concert.concert_date}}</a></h2>
+          <br>
           <h2><a>{{concert.concert_pianist.get_full_name}}</a>  <a>"{{concert.concert_program.name}}"</a></h2>
           <br>
           <hr>

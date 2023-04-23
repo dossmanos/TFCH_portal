@@ -36,3 +36,6 @@ class Concert(models.Model):
     concert_date = models.DateTimeField(default=datetime.datetime.now(), unique=True)   
     class Meta:
         ordering = ['concert_date']
+        
+    def __str__(self):
+        return f'{self.concert_date.astimezone()} {self.concert_pianist.get_full_name()}' 

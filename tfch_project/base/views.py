@@ -169,8 +169,26 @@ def modify_program(request,primary_key):
 def modify_concert(request,primary_key):
     concert = Concert.objects.get(id=primary_key)
     pianist = concert.concert_pianist.get_full_name()
-    program = concert.concert_program.compositions.all()
+    program = concert.concert_program
+    program_compositions = concert.concert_program.compositions.all()
     date = concert.concert_date
+    users = User.objects.all()
+    programs = Program.objects.all()
+    pianists = Pianist.objects.all()
+    if request.method =='POST':
+        if request.user.is_superuser == False:
+            return render(request,'base/error.html',{'message':"Brak uprawnień do modyfikacji koncertów"})
+        else:
+            try:
+                Concert.objects.update(
+                    concert_pianist = User.objects.get(id=request.POST.get('concert_pianist')),
+                    concert_program = Program.objects.get(id=request.POST.get('concert_program'))
+                )
+                primary_key = concert.id
+                return redirect('concert',primary_key)
+            except:
+                return render(request,'base/error.html',{'message':"W bazie jest już koncert z identyczną datą"}) 
+            
     if request.method == 'POST':
         try:
             if 'add' in request.POST:
@@ -183,8 +201,8 @@ def modify_concert(request,primary_key):
             return render(request,'base/error.html',{'message':"Nie wybrano kompozycji. Spróbuj ponownie wybierając jakąś kompozycję z listy"})      
 
 
-    context = {'concert':concert, 'primary_key':concert.id, 'program': program, 'pianist':pianist, 'date':date}   
-    return render(request,'base/modify_program.html',context)
+    context = {'concert':concert, 'primary_key':concert.id, 'program': program, 'pianist':pianist, 'date':date, 'program_compositions':program_compositions,'users': users, 'pianists':pianists, 'programs':programs}   
+    return render(request,'base/modify_concert.html',context)
 
 
 def user_profile(request, primary_key):
