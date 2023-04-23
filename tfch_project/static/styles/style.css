@@ -897,6 +897,10 @@ a {
   color: var(--color-dark-light);
 }
 
+.profile-page .roomList__header h3 {
+  color: var(--color-black);
+}
+
 /*==============================
 =>  Room
 ================================*/

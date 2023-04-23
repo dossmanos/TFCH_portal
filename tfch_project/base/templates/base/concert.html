@@ -20,8 +20,11 @@
     <div class="container">
       <div class="roomList__header">
         <div>
-          <h2><a>Program koncertu "{{concert.concert_program.name}}"</a></h2>
+          <h3><a>{{concert.concert_date}}</a></h3>
+          <h2><a>{{concert.concert_pianist.get_full_name}}</a>  <a>"{{concert.concert_program.name}}"</a></h2>
+          <br>
           <hr>
+          <br>
           {% if program %}
             {% for composition in program %}
               <p>{{composition.polish_name}} / {{composition.english_name}}</p>
