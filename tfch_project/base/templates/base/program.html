@@ -12,7 +12,7 @@
             </div>
           </div>
           <div class="profile__info">
-            <h3>{{user.get_full_name}}</h3>
+            <h3><a>{{user.get_full_name}}</a></h3>
             {% if request.user == user %}
             <a href="{% url 'modify program' program.id %}"  class="btn btn--main btn--pill">Modyfikuj Program</a>
             {% endif %}

@@ -126,6 +126,7 @@ def create_a_concert(request):
     context = {'form':concert_form, 'programs':programs, 'time':time, 'users': users, 'pianists':pianists}
     return render(request,'base/new_concert_form.html', context)
 
+@login_required(login_url='login')
 def program(request,primary_key):
     program = Program.objects.get(id=primary_key)
     compositions = program.compositions.all()
@@ -136,6 +137,7 @@ def program(request,primary_key):
     context = {'program':program, 'compositions': compositions}  
     return render(request,'base/program.html',context)
 
+@login_required(login_url='login')
 def concert(request,primary_key):
     concert = Concert.objects.get(id=primary_key)
     program = concert.concert_program.compositions.all()
@@ -147,6 +149,7 @@ def concert(request,primary_key):
     context = {'concert':concert, 'date': date, 'program':program}  
     return render(request,'base/concert.html',context)
 
+@login_required(login_url='login')
 def modify_program(request,primary_key):
     program = Program.objects.get(id=primary_key)
     compositions = program.compositions.all()
@@ -166,6 +169,7 @@ def modify_program(request,primary_key):
     context = {'program':program, 'primary_key':program.id, 'compositions': compositions, 'all_compositions':all_compositions}   
     return render(request,'base/modify_program.html',context)
 
+@login_required(login_url='login')
 def modify_concert(request,primary_key):
     concert = Concert.objects.get(id=primary_key)
     pianist = concert.concert_pianist.get_full_name()
@@ -204,7 +208,7 @@ def modify_concert(request,primary_key):
     context = {'concert':concert, 'primary_key':concert.id, 'program': program, 'pianist':pianist, 'date':date, 'program_compositions':program_compositions,'users': users, 'pianists':pianists, 'programs':programs}   
     return render(request,'base/modify_concert.html',context)
 
-
+@login_required(login_url='login')
 def user_profile(request, primary_key):
     user_number = User.objects.get(id=primary_key)
     #rooms = user_number.chatroom_set.all()

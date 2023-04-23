@@ -3,6 +3,33 @@
 
 {% block content %}
 <main class="profile-page layout layout--3">
+  <div class="container">
+    <div class="roomList">
+        <div class="roomList__header">
+            <form method="post" action="" id="modify_program">
+                {% csrf_token %} 
+                <select name="composition" id="composition_select" form="modify_program">
+                    <option value="">Wybierz utwór</option>
+                    {%  for composition in all_compositions %}
+                    <option value="{{composition.id}}">{{composition.polish_name}}</option>
+                    {% endfor %}
+                </select>  
+                <br>
+                <br>
+                <div class="form__group">
+                    <button class="btn btn--main" required type="submit" value="Dodaj do programu" id="add" name="add">Dodaj do programu</button>
+                </div>
+                <div class="form__group">
+                    <button class="btn btn--main" required type="submit" value="Usuń z programu" id="remove" name="remove">Usuń z programu</button>
+                </div>
+                <div class="form__group">
+                    <button class="btn btn--main" required type="submit" value="Usuń wszystkie utwory" id="remove all" name="remove all">Usuń wszystkie utwory</button>
+                </div>
+            </form>   
+        </div>
+    </div>
+</div>
+
     <div class="container">
       <div class="roomList">
         <div class="roomList__header">
@@ -17,33 +44,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="container">
-        <div class="roomList">
-            <div class="roomList__header">
-                <form method="post" action="" id="modify_program">
-                    {% csrf_token %} 
-                    <select name="composition" id="composition_select" form="modify_program">
-                        <option value="">Wybierz utwór</option>
-                        {%  for composition in all_compositions %}
-                        <option value="{{composition.id}}">{{composition.polish_name}}</option>
-                        {% endfor %}
-                    </select>  
-                    <br>
-                    <br>
-                    <div class="form__group">
-                        <input required type="submit" value="Dodaj do programu" id="add" name="add"/>
-                    </div>
-                    <div class="form__group">
-                        <input required type="submit" value="Usuń z programu" id="remove" name="remove"/>
-                    </div>
-                    <div class="form__group">
-                        <input required type="submit" value="Usuń wszystkie utwory" id="remove all" name="remove all"/>
-                    </div>
-                </form>   
-            </div>
-        </div>
     </div>
   </main>
 

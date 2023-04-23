@@ -23,9 +23,10 @@
                             {% csrf_token %}
                 
                             <select name="concert_pianist" id="pianist_select" form="new_concert_form">
-                                <option value="">Wybierz wykonawcę</option>
+                                <option value="">Wybierz Pianistę</option>
+                                <option value="">----------------</option>
                                 {%  for user in users %}
-                                    <option value="{{user.id}}">{{user.get_full_name}}</option>
+                                     <option value="{{user.id}}">{{user.get_full_name}}</option>
                                 {% endfor %}
                             </select> 
                 
@@ -44,11 +45,6 @@
                                 <br>
                             </div>
                 
-                            <div class="form__group">
-                                <label for="room_topic"><a>Data</a></label>
-                                <input required type="datetime" value="2023-01-30 18:00" name="concert_date" form="new_concert_form" list="topic-list"/>
-                            </div>
-                
                             <div class="form__action">
                                 <a class="btn btn--dark" href="{% url 'home page' %}">Anuluj</a>
                                 <button class="btn btn--main" type="submit">Akceptuj</button>
@@ -60,7 +56,7 @@
                 <br>
                 <hr>
                 <br>
-                <p><a>Lista Utworów</a></p>
+                <p><a>Program Koncertu</a></p>
                 <br>
                 <hr>
                 <br>
