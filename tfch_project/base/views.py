@@ -75,8 +75,9 @@ def home_page(request):
     #topics = ChatTopic.objects.all()[0:5]
     programs = Program.objects.all()
     concerts = Concert.objects.all()
+    precise_time = datetime.datetime.now()
 
-    context = {'concerts': concerts, 'programs':programs, 'time':current_time, "pianists":pianists,}
+    context = {'concerts': concerts, 'programs':programs, 'time':current_time, "pianists":pianists, 'precise_time': precise_time}
     return render(request,'base/home.html',context)
 
 @login_required(login_url='login')

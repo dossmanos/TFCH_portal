@@ -47,17 +47,16 @@
             </div>
             <hr>
             {%  for concert in concerts %}
-                  <div>
-                    <br>
-                    <h2><a class="btn btn--main" href="{% url 'concert' concert.id %}">Koncert {{concert.concert_date}}</a></h2>
-                    <br>
-                    <p><a>Artysta: {{concert.concert_pianist.get_full_name}}</a></p>
-                    <p><a>Program: {{concert.concert_program.name}}</a></p>
-                    <p><a>Organizacja : Time For Chopin</a></p>
-                    <p><a>Cena : od 55 PLN</a></p>
-                    <hr>
-                  </div>
-
+              <div>
+                <br>
+                <h2><a class="btn btn--main" href="{% url 'concert' concert.id %}">Koncert {{concert.concert_date}}</a></h2>
+                <br>
+                <p><a>Artysta: {{concert.concert_pianist.get_full_name}}</a></p>
+                <p><a>Program: {{concert.concert_program.name}}</a></p>
+                <p><a>Organizacja : Time For Chopin</a></p>
+                <p><a>Cena : od 55 PLN</a></p>
+                <hr>
+              </div> 
             {% endfor %}
           </div>
       </div>

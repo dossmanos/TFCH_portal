@@ -5,6 +5,12 @@
   <main class="profile-page layout layout--3">
     <div class="container">
       <div class="roomList">
+        <div class="profile__info">
+          {% if request.user == user %}
+          <a href="{% url 'modify concert' concert.id %}"  class="btn btn--main btn--pill">Modyfikuj Koncert</a>
+          {% endif %}
+        </div>
+        <br>
         <form method="post" action="" id="delete concert">
           {% csrf_token %} 
           <div class="profile__info">
