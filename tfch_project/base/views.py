@@ -113,7 +113,7 @@ def create_a_concert(request):
         else:
             try:
                 Concert.objects.create(
-                    concert_pianist = User.objects.get(id=request.POST.get('concert_pianist')),
+                    concert_pianist = Program.objects.get(id=request.POST.get('concert_program')).program_pianist,
                     concert_program = Program.objects.get(id=request.POST.get('concert_program')),
                     concert_date = request.POST.get('concert_date'),
                 )
@@ -185,8 +185,8 @@ def modify_concert(request,primary_key):
         else:
             try:
                 Concert.objects.update(
-                    concert_pianist = User.objects.get(id=request.POST.get('concert_pianist')),
-                    concert_program = Program.objects.get(id=request.POST.get('concert_program'))
+                    concert_pianist = Program.objects.get(id=request.POST.get('concert_program')).program_pianist.id,
+                    concert_program = Program.objects.get(id=request.POST.get('concert_program')),
                 )
                 primary_key = concert.id
                 return redirect('concert',primary_key)

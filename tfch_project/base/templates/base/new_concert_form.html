@@ -15,15 +15,8 @@
           <form class="form" action="" method="post" id="new_concert_form">
             {% csrf_token %}
 
-            <select name="concert_pianist" id="pianist_select" form="new_concert_form">
-                <option value="">Wybierz wykonawcę</option>
-                {%  for user in users %}
-                  <option value="{{user.id}}">{{user.get_full_name}}</option>
-                {% endfor %}
-            </select> 
-
             <select name="concert_program" id="program_select" form="new_concert_form">
-                <option value="">Wybierz program</option>
+                <option value="">Wybierz pianistę i program</option>
                 {% for pianist in pianists %}
                   <optgroup label="{{pianist.pianist.get_full_name}}"></optgroup>
                   {% for program in programs %}
