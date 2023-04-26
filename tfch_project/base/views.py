@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib import messages
 from .models import User, Program, Composition, Pianist, Concert
 from .forms import UserForm, MyUserCreationForm, ProgramForm, ConcertForm
-import datetime
+import datetime, calendar
 # Create your views here.
 
 def error(request, error_message:str):
@@ -66,17 +66,19 @@ def home_page(request):
     #     Q(concert_pianist__icontains=q) |
     #     Q(concert_date__icontains=q) |
     #     Q(concert_program__icontains=q)
-    #     )
-    current_time = datetime.date.today()
-    pianists = Pianist.objects.all()
+    #     
     #room_count = list_of_rooms.count()
     #room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
     #topics = ChatTopic.objects.all()[0:5]
+    current_time = datetime.date.today()
+    pianists = Pianist.objects.all()
     programs = Program.objects.all()
     concerts = Concert.objects.all()
     precise_time = datetime.datetime.now()
+    months = calendar.month_name
+    c = calendar.TextCalendar(calendar.SUNDAY)
 
-    context = {'concerts': concerts, 'programs':programs, 'time':current_time, "pianists":pianists, 'precise_time': precise_time}
+    context = {'concerts': concerts, 'programs':programs, 'time':current_time, "pianists":pianists, 'precise_time': precise_time, 'calendar':c, 'months':months}
     return render(request,'base/home.html',context)
 
 @login_required(login_url='login')
@@ -210,12 +212,10 @@ def modify_concert(request,primary_key):
 
 @login_required(login_url='login')
 def user_profile(request, primary_key):
-    user_number = User.objects.get(id=primary_key)
-    #rooms = user_number.chatroom_set.all()
-    #room_messages = user_number.systemmessage_set.all()
-    programs= Program.objects.filter(program_pianist=user_number)
+    user= User.objects.get(id=primary_key)
+    programs= Program.objects.filter(program_pianist=user)
 
-    context = {'user':user_number, 'programs':programs,}
+    context = {'user':user, 'programs':programs,}
     return render(request,'base/user_profile.html', context)
 
 
