@@ -66,11 +66,9 @@ def home_page(request):
     #     Q(concert_pianist__icontains=q) |
     #     Q(concert_date__icontains=q) |
     #     Q(concert_program__icontains=q)
-    #     
-    #room_count = list_of_rooms.count()
-    #room_messages = SystemMessage.objects.filter(Q(room__room_topic__topic_name__icontains=q))
-    #topics = ChatTopic.objects.all()[0:5]
-    current_time = datetime.date.today()
+    current_time = datetime.date.today().strftime(
+                    "%d %b %Y, %a"
+                )
     pianists = Pianist.objects.all()
     programs = Program.objects.all()
     concerts = Concert.objects.all()
@@ -218,7 +216,6 @@ def user_profile(request, primary_key):
     context = {'user':user, 'programs':programs,}
     return render(request,'base/user_profile.html', context)
 
-
 @login_required(login_url='login')
 def update_user(request): 
     user = request.user
@@ -230,29 +227,3 @@ def update_user(request):
             return redirect('user profile', primary_key=user.id)
         
     return render(request,'base/update_user.html', {'form':form})
-
-# @login_required(login_url='login')
-# def delete_a_chat_room(request, primary_key):
-#     chat_room_to_delete = ChatRoom.objects.get(id=primary_key)
-    
-#     if request.user != chat_room_to_delete.host:
-#         return HttpResponse("Access is not allowed")
-
-#     if request.method =='POST':
-#         chat_room_to_delete.delete()
-#         return redirect('home page')
- 
-#     return render(request,'base/delete.html', {'obj': chat_room_to_delete})
-
-# @login_required(login_url='login')
-# def delete_a_post(request, primary_key):
-#     post_to_delete = SystemMessage.objects.get(id=primary_key)
-    
-#     if request.user != post_to_delete.user:
-#         return HttpResponse("Access is not allowed")
-
-#     if request.method =='POST':
-#         post_to_delete.delete()
-#         return redirect('home page')
- 
-#     return render(request,'base/delete.html', {'obj': post_to_delete})
