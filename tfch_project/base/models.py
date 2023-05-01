@@ -10,7 +10,7 @@ class Composition(models.Model):
         {'english': english_name},
     ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.polish_name
     
 class Program(models.Model):
@@ -20,14 +20,14 @@ class Program(models.Model):
     class Meta:
         ordering = ['program_pianist']
     
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name    
 
 class Pianist(models.Model):
     pianist = models.OneToOneField(User,on_delete=models.CASCADE, null=True)
     programs = models.ManyToManyField(Program, related_name='programs',blank=True)
     avatar = models.ImageField(null=True, default='avatar.svg')
-    def __str__(self):
+    def __str__(self) -> str:
         return self.pianist.get_full_name()
 
 class Concert(models.Model):
@@ -37,5 +37,5 @@ class Concert(models.Model):
     class Meta:
         ordering = ['concert_date']
         
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.concert_date.astimezone()} {self.concert_pianist.get_full_name()}' 
