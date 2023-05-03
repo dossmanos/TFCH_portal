@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 # Create your models here.
+
 class Composition(models.Model):
     polish_name:str = models.TextField(max_length=100, null=True)
     english_name:str = models.TextField(max_length=100, null=True)

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List 
 
 from django.db import models
-from pydantic import BaseModel as _BaseModel, Field
+from pydantic import BaseModel as _BaseModel
 from base.models import Program, Composition
 from django.contrib.auth.models import User
 
