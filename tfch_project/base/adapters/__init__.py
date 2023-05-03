@@ -15,16 +15,16 @@ async def retrieve_object(model_class: Type[ModelT], id: int) -> ModelT:
 
 
 async def retrieve_composition(composition_id: int = Path(..., description="get composition from db")):
-    return await retrieve_composition(Composition, composition_id)
+    return await retrieve_object(Composition, composition_id)
 
 async def retrieve_concert(concert_id: int = Path(..., description="get concert from db")):
-    return await retrieve_concert(Concert, concert_id)
+    return await retrieve_object(Concert, concert_id)
 
 async def retrieve_pianist(pianist_id: int = Path(..., description="get pianist from db")):
-    return await retrieve_pianist(Pianist, pianist_id)
+    return await retrieve_object(Pianist, pianist_id)
 
 async def retrieve_program(program_id: int = Path(..., description="get program from db")):
-    return await retrieve_program(Program, program_id)
+    return await retrieve_object(Program, program_id)
 
 
 async def retrieve_compositions():

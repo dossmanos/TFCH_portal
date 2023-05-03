@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List 
 
 from django.db import models
-from pydantic import BaseModel as _BaseModel
+from pydantic import BaseModel as _BaseModel, Field
 from base.models import Program, Composition
 from django.contrib.auth.models import User
 
@@ -14,8 +14,6 @@ class BaseModel(_BaseModel):
 class FastComposition(BaseModel):
     polish_name:str 
     english_name:str 
-    name:list[dict] 
-
     class Config:
         orm_mode = True
 
@@ -60,7 +58,7 @@ class FastPrograms(BaseModel):
     
 class FastPianist(BaseModel):
     pianist: User
-    programs: List[Program]
+    programs: Program
     #avatar is not necessary I believe
 
     class Config:

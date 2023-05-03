@@ -5,10 +5,6 @@ import datetime
 class Composition(models.Model):
     polish_name:str = models.TextField(max_length=100, null=True)
     english_name:str = models.TextField(max_length=100, null=True)
-    name:list[dict] = [
-        {'polski': polish_name},
-        {'english': english_name},
-    ]
 
     def __str__(self) -> str:
         return self.polish_name

@@ -6,7 +6,7 @@ from base import adapters
 from base.models import Concert
 from base.schemas import FastConcert, FastConcerts
 
-router = APIRouter(prefix="/concert", tags=["concerts"])
+router = APIRouter(prefix="/api/concerts", tags=["concerts"])
 
 @router.get("/", response_model=None)#FastConcerts)
 def get_concerts(concerts: List[Concert] = Depends(adapters.retrieve_concerts),) -> FastConcerts:
