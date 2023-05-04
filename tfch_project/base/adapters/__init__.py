@@ -3,7 +3,7 @@ from typing import Type, TypeVar
 from django.db import models
 from fastapi import HTTPException, Path
 
-from base.models import Composition,Concert,Pianist,Program, Task
+from base.models import Composition,Concert,Pianist,Program
 
 ModelT = TypeVar("ModelT", bound=models.Model)
 
