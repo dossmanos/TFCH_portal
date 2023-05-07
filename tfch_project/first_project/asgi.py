@@ -14,11 +14,12 @@ from django.core.asgi import get_asgi_application
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'first_project.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "first_project.settings")
 
 application = get_asgi_application()
 
 tfch_API = FastAPI()
+
 
 def init(app: FastAPI):
     from base.routers import register_routers

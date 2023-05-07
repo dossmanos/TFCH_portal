@@ -8,10 +8,16 @@ from base.schemas import FastPianist, FastPianists
 
 router = APIRouter(prefix="/api/pianists", tags=["pianists"])
 
-@router.get("/", response_model=None)#FastPianists)
-def get_pianists(pianists: List[Pianist] = Depends(adapters.retrieve_pianists),) -> FastPianists:
+
+@router.get("/", response_model=None)  # FastPianists)
+def get_pianists(
+    pianists: List[Pianist] = Depends(adapters.retrieve_pianists),
+) -> FastPianists:
     return FastPianists.from_qs(pianists)
 
-@router.get("/{pianist_id}", response_model=None)#FastPianist)
-def get_pianist(pianist: Pianist = Depends(adapters.retrieve_pianist),) -> FastPianist:
+
+@router.get("/{pianist_id}", response_model=None)  # FastPianist)
+def get_pianist(
+    pianist: Pianist = Depends(adapters.retrieve_pianist),
+) -> FastPianist:
     return FastPianist.from_orm(pianist)
