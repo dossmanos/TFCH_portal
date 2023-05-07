@@ -24,31 +24,27 @@ async def get_composition(
 
 
 @router.post("/")
-async def create_composition(composition : CompostitionCreate) -> CompostitionCreate:
-    return composition 
+def create_composition(set_polish_name: str, set_english_name: str) -> dict:
+    Composition.objects.create(
+        polish_name=set_polish_name, english_name=set_english_name
+    )
+    return {"message": "Composition added to database"}
 
 
 @router.put("/{composition_id}")
-async def update_composition(
-    new_polish_name: str,
-    new_english_name: str,
-    composition: Composition = Depends(adapters.retrieve_composition),
-) -> dict | FastComposition:
-    composition_to_update = composition
-    composition_to_update.update(
+def update_composition(
+    composition_id: int, new_polish_name: str, new_english_name: str
+) -> dict:
+    Composition.objects.filter(id=composition_id).update(
         polish_name=new_polish_name, english_name=new_english_name
     )
     return {"Server info": f"Composition updated succesfully"}
 
 
 @router.delete("/{composition_id}")
-async def delete_composition(
-    composition: Composition = Depends(adapters.retrieve_composition),
-) -> dict:
-    try:
-        composition_to_delete = composition
-        composition_name = composition.polish_name
+def delete_composition(composition_id: int) -> dict:
+    composition_to_delete = Composition.objects.filter(id=composition_id)
+    if composition_to_delete is not None:
         composition_to_delete.delete()
-        return {"Server info": f"composition {composition_name} has been removed"}
-    except:
-        return {"Server info": "Error during deleting composition"}
+        return {"Server info": f"Composition no.{composition_id} succesfully deleted"}
+    return {"Server info": f"Composition not deleted"}
