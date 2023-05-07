@@ -13,6 +13,10 @@ class BaseModel(_BaseModel):
         return [cls.from_orm(inst) for inst in instances]
 
 
+class CompostitionCreate(_BaseModel):
+    polish_name : str
+    english_name: str
+
 class FastComposition(BaseModel):
     polish_name: str
     english_name: str
