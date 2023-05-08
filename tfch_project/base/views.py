@@ -5,8 +5,9 @@ import calendar
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import User, Program, Composition, Pianist, Concert
+from .models import Program, Composition, Pianist, Concert
 from .forms import UserForm, MyUserCreationForm, ProgramForm, ConcertForm
 
 # from django.db.models import Q

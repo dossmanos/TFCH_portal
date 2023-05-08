@@ -1,36 +1,41 @@
+"""This file contains all forms"""
+
 from django.forms import ModelForm
-from .models import User, Pianist, Program, Concert
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
+from .models import Pianist, Program, Concert
+
 
 
 class MyUserCreationForm(UserCreationForm):
+    """A user creation form"""
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ["username", "password1", "password2"]
 
 
 class UserForm(ModelForm):
+    """A user form"""
     class Meta:
         model = Pianist
-        fields = "__all__"
-        exclude = ["pianist", "programs"]
-
+        fields = ["avatar"]
 
 class ProgramForm(ModelForm):
+    """A program form"""
     class Meta:
         model = Program
-        fields = "__all__"
-        exclude = ["compositions"]
+        fields = ["name", "program_pianist"]
 
 
 class ConcertForm(ModelForm):
+    """A concert form"""
     class Meta:
         model = Concert
         fields = "__all__"
 
 
 class ProgramModificationForm(ModelForm):
+    """A program modification form"""
     class Meta:
         model = Program
-        fields = "__all__"
-        exclude = ["compositions"]
+        fields = ["name", "program_pianist"]

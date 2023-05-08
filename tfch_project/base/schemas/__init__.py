@@ -1,23 +1,31 @@
+"""This file contains all fast API schemas for base application"""
+
 from datetime import datetime
 from typing import List
-
 from django.db import models
 from pydantic import BaseModel as _BaseModel
+from django.contrib.auth import get_user_model
 from base.models import Program, Composition
-from django.contrib.auth.models import User
 
 
 class BaseModel(_BaseModel):
+    """A baseModel class inheriting from pydantic BaseModel"""
+
     @classmethod
     def from_orms(cls, instances: List[models.Model]):
         return [cls.from_orm(inst) for inst in instances]
 
 
 class CompostitionCreate(_BaseModel):
-    polish_name : str
+    """A create composition class inheriting from pydantic BaseModel"""
+
+    polish_name: str
     english_name: str
 
+
 class FastComposition(BaseModel):
+    """A composition class inheriting from BaseModel class"""
+
     polish_name: str
     english_name: str
 
@@ -26,6 +34,8 @@ class FastComposition(BaseModel):
 
 
 class FastCompositions(BaseModel):
+    """A compositions class inheriting from BaseModel class"""
+
     items: List[FastComposition]
 
     @classmethod
@@ -34,7 +44,9 @@ class FastCompositions(BaseModel):
 
 
 class FastConcert(BaseModel):
-    concert_pianist: User
+    """A concert class inheriting from BaseModel class"""
+
+    concert_pianist: get_user_model()
     concert_program: Program
     concert_date: datetime
 
@@ -44,6 +56,8 @@ class FastConcert(BaseModel):
 
 
 class FastConcerts(BaseModel):
+    """A concerts class inheriting from BaseModel class"""
+
     items: List[FastConcert]
 
     @classmethod
@@ -52,7 +66,9 @@ class FastConcerts(BaseModel):
 
 
 class FastProgram(BaseModel):
-    program_pianist: User
+    """A program class inheriting from BaseModel class"""
+
+    program_pianist: get_user_model()
     name: str
     compositions: List[Composition]
 
@@ -62,6 +78,8 @@ class FastProgram(BaseModel):
 
 
 class FastPrograms(BaseModel):
+    """A programs class inheriting from BaseModel class"""
+
     items: List[FastProgram]
 
     @classmethod
@@ -70,7 +88,9 @@ class FastPrograms(BaseModel):
 
 
 class FastPianist(BaseModel):
-    pianist: User
+    """A pianist class inheriting from BaseModel class"""
+
+    pianist: get_user_model()
     programs: Program
     # avatar is not necessary I believe
 
@@ -80,6 +100,8 @@ class FastPianist(BaseModel):
 
 
 class FastPianists(BaseModel):
+    """A pianists class inheriting from BaseModel class"""
+
     items: List[FastPianist]
 
     @classmethod
